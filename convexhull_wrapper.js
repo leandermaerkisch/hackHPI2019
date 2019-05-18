@@ -6,5 +6,5 @@ function convex_hull_polyline(incs) {
     let latlngs = hull_points.map(function(p) {
         return [p.x, p.y]
     })
-    return L.polygon(latlngs, {color: 'red'})
+    return L.polygon(latlngs, {color: 'red', stroke: false})
 }
