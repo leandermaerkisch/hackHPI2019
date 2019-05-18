@@ -24,16 +24,39 @@ slider.oninput = function () {
 
 incidents = load_file()
 console.log(incidents)
-incidents.forEach(incident => {
-    incident.addTo(map)
+
+var markers = L.markerClusterGroup({
+    iconCreateFunction: function (cluster) {
+        let markers = cluster.getAllChildMarkers()
+        let incs = markers.map(mark => {
+            return mark.owning_incident
+        })
+        let fatalities = incs.reduce(reducer = (accumulator, currentValue) => {
+            return accumulator + currentValue.info.fatalities
+        }, 0)
+        let html = '<div class="circle">' + markers.length + '</div>';
+        return L.divIcon({ html: html, iconSize: L.point(Math.sqrt(fatalities * 3) + 5, Math.sqrt(fatalities * 3) + 5) });
+    }
 });
 
-grouped = groupBy(incidents, "actor1")
-console.log(grouped)
+incidents.forEach(incident => {
+    markers.addLayer(incident.marker)
+    //incident.addTo(map)
+});
 
+map.addLayer(markers);
+console.log(markers)
 colors = ["#FF0000", "#0000FF", "#00FF00"]
 
+grouped = groupBy(incidents, "actor1")
 grouped.forEach((group, group_index) => {
+    group.forEach(inc => {
+        inc.setColor(colors[group_index])
+    })
+})
+/*
+grouped.forEach((group, group_index) => {
+    group
     connections = group.map((inc, index, array) => {
         if (index == array.length - 1 || inc.latlng[0] == array[index+1].latlng[0] && inc.latlng[1] == array[index+1].latlng[1]) {
             return null
@@ -47,4 +70,4 @@ grouped.forEach((group, group_index) => {
         connection.setColor(colors[group_index])
     });
 
-})
+})*/
