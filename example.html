@@ -16,30 +16,17 @@
 	<script src="node_modules/leaflet/dist/leaflet.js"></script>
 	<script src="node_modules/leaflet-polylinedecorator/dist/leaflet.polylineDecorator.js"></script>
 	<script src="node_modules/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
-
-	<style>
-		html, body {
-			height: 100%;
-			margin: 0;
-		}
-		#map {
-			width: 1200px;
-			height: 600px;
-		}
-	</style>
-
 	
 </head>
 <body>
 
 <div id='map'></div>
-<div>
-	<input type="range" min="1" max="100" value="50" class="slider" id="myRange">
-	<p>Value: <span id="demo"></span></p>
-</div>
+<div id="sidebar"> 
+	<p>Hello, I am a sidebar</p>
+  </div>
 
-<script src="event_series_boko_haram.js"></script>
 <script src="month_centroids_per_actor.js"></script>
+<script src="palette.js"></script>
 <script src="incident.js"></script>
 <script src="loader.js"></script>
 <script src="convexhull.js"></script>

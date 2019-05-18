@@ -1,6 +1,6 @@
-function convex_hull_polyline(markers) {
-    let points = markers.map(function(m) {
-        return {x: m._latlng.lat, y: m._latlng.lng}
+function convex_hull_polyline(incs) {
+    let points = incs.map(function(inc) {
+        return {x: inc.latlng[0], y: inc.latlng[1]}
     })
     let hull_points = convexhull.makeHull(points)
     let latlngs = hull_points.map(function(p) {
