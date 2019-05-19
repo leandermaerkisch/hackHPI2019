@@ -59,12 +59,18 @@ class Incident {
     fillDivAs(label, div_svg) {
         let inc = this
         let div = d3.select(div_svg)
-        div.style("background-color", "#CCCCCC")
+        div.style("background-color", "#FFFFFF88")
         div.append("h2")
             .text(function () { return `${label}: ${inc.info.event_type}` })
         div.append("p")
             .text(function () { return inc.info.event_date })
+        div.append("p")
+            .text(function () { return `${inc.info.fatalities} fatalities` })
         div.on("click", function () { select_element(inc) })
+    }
+    zoomOn() {
+        this.parent.expand()
+        map.setView(this.latlng, 8);
     }
 }
 
@@ -99,7 +105,7 @@ class MonthSummary {
         this.year = parseInt(spl[0])
         this.month = parseInt(spl[1])
         this.latlng = input.latlng
-        this.opacity = 1.0 - ((2019-this.year)*12 + 5-this.month) * 0.05
+        this.opacity = 1.0 - ((2019 - this.year) * 12 + 5 - this.month) * 0.05
         this.incidents = input.incidents.map(entry => {
             return new Incident(entry, this)
         })
@@ -186,7 +192,7 @@ class MonthSummary {
     fillDivAs(label, div_svg) {
         let month = this
         let div = d3.select(div_svg)
-        div.style("background-color", "#CCCCCC")
+        div.style("background-color", "#FFFFFF88")
         div.append("h2")
             .text(function () { return `${label}: ${month.info.date}` })
         div.append("p")
@@ -196,6 +202,14 @@ class MonthSummary {
         div.append("p")
             .text(function () { return `${month.fatalities} fatalities` })
         div.on("click", function () { select_element(month) })
+    }
+    zoomOn() {
+        if (this.map) {
+            if (!this.parent.active) {
+                this.parent.addTo(this.map)
+            }
+            map.setView(this.latlng, 8);
+        }
     }
 }
 
@@ -283,5 +297,8 @@ class Actor {
                 }
             })
         div.append("label").text("is visible")
+    }
+    zoomOn() {
+        map.setView(this.months[0].latlng, 8);
     }
 }

@@ -1,5 +1,6 @@
 sidebar_info = d3.select("#info");
 sidebar_list = d3.select("#list");
+sidebar = d3.select("#sidebar")
 
 function clear_sidebar() {
     sidebar_info.selectAll("*").remove()
@@ -14,6 +15,7 @@ function createInfo(infos) {
         .append("div")
     enter.append("p")
         .text(i => { return i[0] })
+        .style("font-weight", "bold")
     enter.append("p")
         .text(i => { return i[1] })
 }
@@ -43,8 +45,14 @@ function select_nothing() {
 
 function select_element(element) {
     clear_sidebar()
+    if (element.color) {
+        sidebar_info.style("background-color", element.color.concat("88"))
+        sidebar_list.style("background-color", element.color.concat("88"))
+        sidebar.style("background-color", element.color.concat("88"))
+    }
     sidebar_info.append("h1")
         .text(element.name)
+        .on("click", function () { element.zoomOn() })
     createInfo(element.getInfo())
     createAssociates(element.getAssociates())
 }
