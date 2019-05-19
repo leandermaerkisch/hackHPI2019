@@ -1,6 +1,8 @@
 # Unbounded
 A visualization platform for mapping conflicts and tracking the movements of terrorist groups.
 
+Try it out at https://arthurz0.github.io/hackHPI2019/
+
 ## Usage
 ### Basic map view
 ![alt text](https://github.com/arthurz0/hackHPI2019/blob/master/example/unbounded_nigeria_1.png "Nigeria Example")
