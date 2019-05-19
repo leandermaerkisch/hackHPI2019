@@ -7,9 +7,9 @@ function clear_sidebar() {
     sidebar_info.selectAll("*").remove()
     sidebar_list.selectAll("*").remove()
     sidebar_stats.selectAll("*").remove()
-    sidebar_info.style("background-color", "#FFFFFF")
-    sidebar_list.style("background-color", "#FFFFFF")
-    sidebar.style("background-color", "#FFFFFF")
+    sidebar_info.style("background", "transparent")
+    sidebar_list.style("background", "transparent")
+    sidebar.style("background", "transparent")
 }
 
 function createInfo(infos) {

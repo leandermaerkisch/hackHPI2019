@@ -61,7 +61,7 @@ class Incident {
         let div = d3.select(div_svg)
         div.style("background-color", "#FFFFFF88")
         div.append("h2")
-            .text(function () { return `${label}: ${inc.info.event_type}` })
+            .text(function () { return `${inc.info.event_type}` })
         div.append("p")
             .text(function () { return inc.info.event_date })
         div.append("p")
@@ -229,7 +229,7 @@ class MonthSummary {
         let div = d3.select(div_svg)
         div.style("background-color", "#FFFFFF88")
         div.append("h2")
-            .text(function () { return `${label}: ${month.info.date}` })
+            .text(function () { return `${month.info.date}` })
         div.append("p")
             .text(function () { return month.info.event_date })
         div.append("p")
@@ -327,7 +327,7 @@ class Actor {
         let actor = this
         let div = d3.select(div_svg)
         div.append("h2")
-            .text(function () { return `${label}: ${actor.name}` })
+            .text(function () { return `${actor.name}` })
         div.on("click", function () { select_element(actor) })
         div.style("background-color", actor.color.concat("88"))
         div.append("input")
@@ -342,9 +342,9 @@ class Actor {
                     actor.remove(map)
                 }
             })
-        div.append("label").text("is visible")
+        div.append("label").text("visible")
         div.append("button")
-            .text("toggle expand")
+            .text("expand")
             .on("click", function() {
                 if (actor.expanded) {
                     actor.collapse()
