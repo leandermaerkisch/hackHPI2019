@@ -26,8 +26,8 @@ class Border {
         icon.options.iconAnchor = [icon.options.iconSize[0] / 2, icon.options.iconSize[1] / 2]
         this.marker.setIcon(icon)
         this.marker.bindPopup(this.crossing_groups.reduce((acc, group) => {
-            return acc.concat(`${group.name}<br>`)
-        }, ""))
+            return acc.concat(`<br>${group.name}`)
+        }, `Border ${this.name}`))
         group.borders_crossed.push(this)
     }
     getInfo() {

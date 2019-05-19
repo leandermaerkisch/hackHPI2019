@@ -25,12 +25,50 @@ function createInfo(infos) {
         .text(i => { return i[1] })
 }
 
-function createAssociates(associates) {
+function toggleCommonEvent(actor1, actor2) {
+    actor1.addTo(map)
+    actor2.addTo(map)
+    let inc1 = actor1.months.map(month => {
+        return month.incidents.map(inc => {
+            if (inc.info.actor2 == actor2.name) {
+                return [month, inc]
+            } else {
+                return null
+            }
+        }).filter(element => { return element != null })
+    }).flat()
+    let inc2 = actor2.months.map(month => {
+        return month.incidents.map(inc => {
+            if (inc.info.actor2 == actor1.name) {
+                return inc
+            } else {
+                return null
+            }
+        }).filter(element => { return element != null })
+    }).flat()
+    let incs = inc1.concat(inc2)
+    let shouldShow = incs.some(inc => { return inc.active == false })
+    incs.forEach(inc => {
+        if (shouldShow) {
+            inc.addTo(map)
+        } else {
+            inc.remove(map)
+        }
+    })
+}
+
+function createAssociates(associates, element=null) {
     sidebar_list.selectAll("div")
         .data(associates)
         .enter()
         .append("div")
         .each(function (assoc) { assoc[1].fillDivAs(assoc[0], this) })
+        .filter(function (assoc) { return assoc[0] == "closely related" })
+        .append("button")
+            .text("toggle common events")
+            .on("click", function (assoc) {
+                toggleCommonEvent(element, assoc)
+            })
 }
 
 function remove_by_substring(string) {
@@ -108,7 +146,7 @@ function select_element(element) {
         .text(element.name)
         .on("click", function () { element.zoomOn() })
     createInfo(element.getInfo())
-    createAssociates(element.getAssociates())
+    createAssociates(element.getAssociates(), element)
     if (element instanceof Actor) {
         createIncidentsPlot(element)
     }

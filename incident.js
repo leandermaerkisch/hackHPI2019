@@ -23,10 +23,12 @@ class Incident {
         icon.options.iconSize = [Math.sqrt(this.info.fatalities) * 10 + 30, Math.sqrt(this.info.fatalities) * 10 + 30];
         this.marker.setIcon(icon)
         this.color = null
+        this.active = false
     }
     addTo(m) {
         this.marker.addTo(m)
         this.line.addTo(m)
+        this.active = true
     }
     setColor(col) {
         this.color = col
@@ -35,6 +37,7 @@ class Incident {
     remove(m) {
         m.removeLayer(this.marker)
         m.removeLayer(this.line)
+        this.active = false
     }
     getInfo() {
         let info = []
@@ -289,6 +292,7 @@ class Actor {
         this.map = null
         this.expanded = false
         this.borders_crossed = []
+        this.closely_related = []
     }
     addTo(m) {
         this.map = m
@@ -332,6 +336,9 @@ class Actor {
         let assoc = []
         this.borders_crossed.forEach(border => {
             assoc.push(["border crossed", border])
+        })
+        this.closely_related.forEach(group => {
+            assoc.push(["closely related", group])
         })
         this.months.forEach(month => {
             assoc.push(["month", month])
