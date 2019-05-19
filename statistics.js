@@ -75,7 +75,6 @@ function createIncidentsPlot(actor) {
             }
         })
     }).flat()
-    console.log(blocks)
     svg.selectAll("rect")
         .data(blocks)
         .enter()

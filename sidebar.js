@@ -31,6 +31,9 @@ function createAssociates(associates) {
 }
 
 function select_nothing() {
+    sidebar_info.style("background-color", "#FFFFFF")
+    sidebar_list.style("background-color", "#FFFFFF")
+    sidebar.style("background-color", "#FFFFFF")
     clear_sidebar()
     //b.setAttribute('class', 'btn');
     sidebar_info.append("button")
