@@ -256,20 +256,21 @@ class Actor {
         this.info = input
         this.months = input.map(m => { return new MonthSummary(m, actor) })
         this.eventTypes = sumEventTypes(this.months)
-        this.connections = this.months.map((month, index, array) => {
+        this.connections = []/*this.months.map((month, index, array) => {
             if (index == array.length - 1 || month.latlng[0] == array[index + 1].latlng[0] && month.latlng[1] == array[index + 1].latlng[1]) {
                 return null
             }
             return new Connection(month, array[index + 1])
         }).filter(element => {
             return element != null
-        })
+        })*/
         this.map = null
         this.noIncidents = this.months.reduce((acc, month) => {
             return acc + month.noIncidents
         }, 0)
-        this.color = null
+        this.color = "#FFFFFF88"
         this.map = null
+        this.expanded = false
     }
     addTo(m) {
         this.map = m
@@ -300,12 +301,19 @@ class Actor {
         this.active = false
     }
     collapse() {
+        if (!this.expanded) {
+            return
+        }
         this.months.forEach(month => {
             month.collapse()
         })
-    }
+        this.expanded = false
+    }   
     getInfo() {
         let info = []
+        if (this.map == null) {
+            info.push(["NOTICE", "not displayed on the map"])
+        }
         return info
     }
     getAssociates() {
@@ -321,11 +329,11 @@ class Actor {
         div.append("h2")
             .text(function () { return `${label}: ${actor.name}` })
         div.on("click", function () { select_element(actor) })
-        div.style("background-color", actor.color)
+        div.style("background-color", actor.color.concat("88"))
         div.append("input")
             .attr("type", "checkbox")
             .property("checked", function () { return (actor.active) ? true : false })
-            .attr("disabled", function () { return (actor.color == null) ? true : null })
+            .property("disabled", function () { return (actor.map == null) ? true : null })
             .on("click", function () {
                 d3.event.stopPropagation()
                 if (this.checked) {
@@ -335,6 +343,15 @@ class Actor {
                 }
             })
         div.append("label").text("is visible")
+        div.append("button")
+            .text("toggle expand")
+            .on("click", function() {
+                if (actor.expanded) {
+                    actor.collapse()
+                } else {
+                    actor.expand()
+                }
+            })
     }
     zoomOn() {
         if (this.map) {
@@ -343,5 +360,18 @@ class Actor {
             }
             map.setView(this.months[0].latlng, 8);
         }
+    }
+    expand() {
+        if (this.map == null) {
+            return
+        }
+        if (!this.active) {
+            this.addTo(this.map)
+        }
+        if (this.expanded) {
+            return
+        }
+        this.months.forEach(month => { month.expand() })
+        this.expanded = true
     }
 }

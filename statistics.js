@@ -45,7 +45,7 @@ function createIncidentsPlot(actor) {
     let height = 500 - margin.top - margin.bottom;
 
     let x = d3.scaleTime()
-        .domain([new Date(2018, 1, 1), new Date(2019, 4, 31)])
+        .domain([new Date(2017, 12, 1), new Date(2019, 4, 31)])
         .rangeRound([0, width]);
     let max_inc = Math.max(...actor.months.map(month => { return month.incidents.length }))
     let y = d3.scaleLinear()

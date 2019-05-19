@@ -4,12 +4,12 @@ html, body {
 }
 
 #map {
-    width: 60%;
+    width: 65%;
     height: 100%;
 }
 
 #sidebar {
-    width: 40%;
+    width: 35%;
     height: 100%;
     float: right;
     top: 0px;
@@ -38,4 +38,9 @@ h2 {
 
 #list>div, #info.div {
     margin-bottom: 3px;
+}
+
+#list>div>button {
+    right: 0px;
+    position: absolute;
 }

@@ -7,6 +7,9 @@ function clear_sidebar() {
     sidebar_info.selectAll("*").remove()
     sidebar_list.selectAll("*").remove()
     sidebar_stats.selectAll("*").remove()
+    sidebar_info.style("background-color", "#FFFFFF")
+    sidebar_list.style("background-color", "#FFFFFF")
+    sidebar.style("background-color", "#FFFFFF")
 }
 
 function createInfo(infos) {
@@ -31,9 +34,6 @@ function createAssociates(associates) {
 }
 
 function select_nothing() {
-    sidebar_info.style("background-color", "#FFFFFF")
-    sidebar_list.style("background-color", "#FFFFFF")
-    sidebar.style("background-color", "#FFFFFF")
     clear_sidebar()
     //b.setAttribute('class', 'btn');
     sidebar_info.append("button")
