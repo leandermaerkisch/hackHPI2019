@@ -1,10 +1,12 @@
 sidebar_info = d3.select("#info");
 sidebar_list = d3.select("#list");
+sidebar_stats = d3.select("#stats");
 sidebar = d3.select("#sidebar")
 
 function clear_sidebar() {
     sidebar_info.selectAll("*").remove()
     sidebar_list.selectAll("*").remove()
+    sidebar_stats.selectAll("*").remove()
 }
 
 function createInfo(infos) {
@@ -55,4 +57,7 @@ function select_element(element) {
         .on("click", function () { element.zoomOn() })
     createInfo(element.getInfo())
     createAssociates(element.getAssociates())
+    if (element instanceof Actor) {
+        createIncidentsPlot(element)
+    }
 }

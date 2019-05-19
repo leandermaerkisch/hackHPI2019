@@ -96,6 +96,40 @@ class Connection {
     }
 }
 
+function getEventTypes(incidents) {
+    let result = {
+        "Violence against civilians": 0,
+        "Strategic developments": 0,
+        "Battles": 0,
+        "Protests": 0,
+        "Riots": 0,
+        "Explosions/Remote violence": 0
+    }
+    incidents.forEach(incident => {
+        result[incident.info.event_type] += 1
+    })
+    return result
+}
+
+function sumEventTypes(months) {
+    return months.reduce(function (acc, month) {
+        acc["Violence against civilians"] += month["Violence against civilians"]
+        acc["Strategic developments"] += month["Strategic developments"]
+        acc["Battles"] += month["Battles"]
+        acc["Protests"] += month["Protests"]
+        acc["Riots"] += month["Riots"]
+        acc["Explosions/Remote violence"] += month["Explosions/Remote violence"]
+        return acc
+    }, {
+            "Violence against civilians": 0,
+            "Strategic developments": 0,
+            "Battles": 0,
+            "Protests": 0,
+            "Riots": 0,
+            "Explosions/Remote violence": 0
+        })
+}
+
 class MonthSummary {
     constructor(input, parent) {
         this.name = input.date
@@ -109,6 +143,7 @@ class MonthSummary {
         this.incidents = input.incidents.map(entry => {
             return new Incident(entry, this)
         })
+        this.eventTypes = getEventTypes(this.incidents)
         this.fatalities = this.incidents.reduce((acc, inc) => {
             return acc + inc.info.fatalities
         }, 0)
@@ -220,6 +255,7 @@ class Actor {
         this.name = name
         this.info = input
         this.months = input.map(m => { return new MonthSummary(m, actor) })
+        this.eventTypes = sumEventTypes(this.months)
         this.connections = this.months.map((month, index, array) => {
             if (index == array.length - 1 || month.latlng[0] == array[index + 1].latlng[0] && month.latlng[1] == array[index + 1].latlng[1]) {
                 return null
@@ -233,8 +269,10 @@ class Actor {
             return acc + month.noIncidents
         }, 0)
         this.color = null
+        this.map = null
     }
     addTo(m) {
+        this.map = m
         this.months.forEach(month => {
             month.addTo(m)
         })
@@ -286,8 +324,8 @@ class Actor {
         div.style("background-color", actor.color)
         div.append("input")
             .attr("type", "checkbox")
-            .attr("checked", actor.active)
-            .attr("disabled", (actor.color == null) ? true : null)
+            .property("checked", function () { return (actor.active) ? true : false })
+            .attr("disabled", function () { return (actor.color == null) ? true : null })
             .on("click", function () {
                 d3.event.stopPropagation()
                 if (this.checked) {
@@ -299,6 +337,11 @@ class Actor {
         div.append("label").text("is visible")
     }
     zoomOn() {
-        map.setView(this.months[0].latlng, 8);
+        if (this.map) {
+            if (!this.active) {
+                this.addTo(this.map)
+            }
+            map.setView(this.months[0].latlng, 8);
+        }
     }
 }
