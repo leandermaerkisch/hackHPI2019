@@ -288,6 +288,7 @@ class Actor {
         this.color = "#FFFFFF88"
         this.map = null
         this.expanded = false
+        this.borders_crossed = []
     }
     addTo(m) {
         this.map = m
@@ -329,6 +330,9 @@ class Actor {
     }
     getAssociates() {
         let assoc = []
+        this.borders_crossed.forEach(border => {
+            assoc.push(["border crossed", border])
+        })
         this.months.forEach(month => {
             assoc.push(["month", month])
         })
@@ -357,6 +361,7 @@ class Actor {
         div.append("button")
             .text("toggle expand")
             .on("click", function() {
+                d3.event.stopPropagation()
                 if (actor.expanded) {
                     actor.collapse()
                 } else {

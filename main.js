@@ -23,3 +23,20 @@ important_actors.forEach((actor, index) => {
     actor.addTo(map)
 })
 select_nothing()
+
+borders = border_positions.map(pos => {
+    return new Border(pos)
+})
+borders_map = new Map(borders.map(b => {
+    return [b.name, b]
+}))
+borders.forEach(border => {
+    border.addTo(map)
+})
+Object.entries(crossed_borders_data).forEach(pair => {
+    let [actor_name, bs] = pair
+    let actor = actors_map.get(actor_name)
+    bs.forEach(b => {
+        borders_map.get(b).push(actor)
+    })
+})
