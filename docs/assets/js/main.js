@@ -47,6 +47,16 @@ common_involvement_data.forEach(inv => {
         if (actor1 != undefined && actor2 != undefined) {
             actor1.closely_related.push(actor2)
             actor2.closely_related.push(actor1)
+        }
+    }
+})
+consecutive_data.forEach(inv => {
+    if (inv.consecutive_frequency > 20) {
+        let actor1 = actors_map.get(inv.relation[0])
+        let actor2 = actors_map.get(inv.relation[1])
+        if (actor1 != undefined && actor2 != undefined) {
+            actor1.strongly_corelated.push(actor2)
+            actor2.strongly_corelated.push(actor1)
             console.log(actor1.name, " and ", actor2.name)
         }
     }

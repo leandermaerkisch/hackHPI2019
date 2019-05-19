@@ -39,8 +39,3 @@ h2 {
 #list>div, #info.div {
     margin-bottom: 3px;
 }
-
-#list>div>button {
-    right: 0px;
-    position: absolute;
-}

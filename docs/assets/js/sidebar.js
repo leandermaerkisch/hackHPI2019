@@ -63,7 +63,7 @@ function createAssociates(associates, element=null) {
         .enter()
         .append("div")
         .each(function (assoc) { assoc[1].fillDivAs(assoc[0], this) })
-        .filter(function (assoc) { return assoc[0] == "closely related" })
+        .filter(function (assoc) { return assoc[0] == "many common events" })
         .append("button")
             .text("toggle common events")
             .on("click", function (assoc) {

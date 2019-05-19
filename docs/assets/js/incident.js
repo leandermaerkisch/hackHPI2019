@@ -296,6 +296,7 @@ class Actor {
         this.expanded = false
         this.borders_crossed = []
         this.closely_related = []
+        this.strongly_corelated = []
     }
     addTo(m) {
         this.map = m
@@ -341,6 +342,9 @@ class Actor {
             assoc.push(["border crossed", border])
         })
         this.closely_related.forEach(group => {
+            assoc.push(["many common events", group])
+        })
+        this.strongly_corelated.forEach(group => {
             assoc.push(["closely related", group])
         })
         this.months.forEach(month => {
