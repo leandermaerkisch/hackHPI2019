@@ -78,12 +78,15 @@ class Connection {
     constructor(monthSummary1, monthSummary2) {
         this.from = monthSummary1
         this.to = monthSummary2
-        let distance = Math.sqrt(Math.pow(monthSummary2.latlng[0] - monthSummary1.latlng[0], 2) + Math.pow(monthSummary2.latlng[1] - monthSummary1.latlng[1], 2))
-        let direction = [(monthSummary2.latlng[0] - monthSummary1.latlng[0]) / distance / 20, (monthSummary2.latlng[1] - monthSummary1.latlng[1]) / distance / 20]
-        let rotatedDirection = [-direction[1], direction[0]]
-        let supportPoint1 = [monthSummary2.latlng[0] - direction[0] + rotatedDirection[0] / 2, monthSummary2.latlng[1] - direction[1] + rotatedDirection[1] / 2]
-        let supportPoint2 = [monthSummary2.latlng[0] - direction[0] - rotatedDirection[0] / 2, monthSummary2.latlng[1] - direction[1] - rotatedDirection[1] / 2]
-        this.line = L.polyline([monthSummary1.latlng, monthSummary2.latlng, supportPoint1, supportPoint2, monthSummary2.latlng], { opacity: 0.5 })
+        //let distance = Math.sqrt(Math.pow(monthSummary2.latlng[0] - monthSummary1.latlng[0], 2) + Math.pow(monthSummary2.latlng[1] - monthSummary1.latlng[1], 2))
+        //let direction = [(monthSummary2.latlng[0] - monthSummary1.latlng[0]) / distance / 20, (monthSummary2.latlng[1] - monthSummary1.latlng[1]) / distance / 20]
+        //let rotatedDirection = [-direction[1], direction[0]]
+        //let supportPoint1 = [monthSummary2.latlng[0] - direction[0] + rotatedDirection[0] / 2, monthSummary2.latlng[1] - direction[1] + rotatedDirection[1] / 2]
+        //let supportPoint2 = [monthSummary2.latlng[0] - direction[0] - rotatedDirection[0] / 2, monthSummary2.latlng[1] - direction[1] - rotatedDirection[1] / 2]
+        //this.line = L.polyline([monthSummary1.latlng, monthSummary2.latlng, supportPoint1, supportPoint2, monthSummary2.latlng])
+        this.line = L.polyline.antPath([[this.from.latlng[0], this.from.latlng[1]], [this.to.latlng[0], this.to.latlng[1]]], {})
+        this.from.connections.push(this)
+        this.to.connections.push(this)
     }
     addTo(m) {
         this.line.addTo(m)
@@ -157,13 +160,17 @@ class MonthSummary {
         this.isCollapsed = true
         this.noIncidents = this.incidents.length
         this.marker.bindPopup(`${this.year}-${this.month}<br>${parent.name}<br>${this.incidents.length} incidents<br>${this.fatalities} fatalities`)
+        let month = this
         this.marker.on('mouseover', function (e) {
             this.openPopup();
+            month.addAllConnections()
         });
         this.marker.on('mouseout', function (e) {
             this.closePopup();
+            month.removeAllConnections()
         });
         this.color = null
+        this.connections = []
     }
     addTo(m) {
         let month = this
@@ -246,6 +253,16 @@ class MonthSummary {
             map.setView(this.latlng, 8);
         }
     }
+    addAllConnections() {
+        this.connections.forEach(connection => {
+            connection.addTo(this.map)
+        })
+    }
+    removeAllConnections() {
+        this.connections.forEach(connection => {
+            connection.remove(this.map)
+        })
+    }
 }
 
 class Actor {
@@ -256,14 +273,14 @@ class Actor {
         this.info = input
         this.months = input.map(m => { return new MonthSummary(m, actor) })
         this.eventTypes = sumEventTypes(this.months)
-        this.connections = []/*this.months.map((month, index, array) => {
+        this.connections = this.months.map((month, index, array) => {
             if (index == array.length - 1 || month.latlng[0] == array[index + 1].latlng[0] && month.latlng[1] == array[index + 1].latlng[1]) {
                 return null
             }
             return new Connection(month, array[index + 1])
         }).filter(element => {
             return element != null
-        })*/
+        })
         this.map = null
         this.noIncidents = this.months.reduce((acc, month) => {
             return acc + month.noIncidents
@@ -276,9 +293,6 @@ class Actor {
         this.map = m
         this.months.forEach(month => {
             month.addTo(m)
-        })
-        this.connections.forEach(connection => {
-            connection.addTo(m)
         })
         this.active = true
     }
@@ -301,9 +315,6 @@ class Actor {
         this.active = false
     }
     collapse() {
-        if (!this.expanded) {
-            return
-        }
         this.months.forEach(month => {
             month.collapse()
         })

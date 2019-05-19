@@ -33,6 +33,15 @@ function createAssociates(associates) {
         .each(function (assoc) { assoc[1].fillDivAs(assoc[0], this) })
 }
 
+function remove_by_substring(string) {
+    important_actors.filter(actor => {
+        return actor.name.includes(string)
+    }).forEach(actor => {
+        actor.remove(map)
+    })
+    select_nothing()
+}
+
 function select_nothing() {
     clear_sidebar()
     //b.setAttribute('class', 'btn');
@@ -43,7 +52,47 @@ function select_nothing() {
             })
         })
         .text("collapse all")
-    createAssociates(important_actors.map(function(actor) {
+    sidebar_info.append("button")
+        .on("click", function () {
+            remove_by_substring("Protesters")
+        })
+        .text("hide protestors")
+    sidebar_info.append("button")
+        .on("click", function () {
+            remove_by_substring("Military Forces")
+        })
+        .text("hide Military Forces")
+    sidebar_info.append("button")
+        .on("click", function () {
+            remove_by_substring("Rioters")
+        })
+        .text("hide rioters")
+    sidebar_info.append("button")
+        .on("click", function () {
+            remove_by_substring("Unidentified Armed Group")
+        })
+        .text("hide unidentified armed group")
+    sidebar_info.append("button")
+        .on("click", function () {
+            important_actors.filter(actor => {
+                let strings = ["Protesters", "Military Forces", "Rioters", "Unidentified Armed Group"]
+                return !strings.some(string => { return actor.name.includes(string) })
+            }).forEach(actor => {
+                actor.remove(map)
+            })
+            select_nothing()
+        })
+        .text("hide terrorists")
+    sidebar_info.append("button")
+        .on("click", function () {
+            important_actors.forEach(actor => {
+                actor.addTo(map)
+            })
+            select_nothing()
+        })
+        .text("show all")
+
+    createAssociates(important_actors.map(function (actor) {
         return ["group", actor]
     }))
 }
