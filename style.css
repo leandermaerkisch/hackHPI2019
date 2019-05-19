@@ -18,11 +18,24 @@ html, body {
     overflow: scroll;
 }
 
-.checkbox {
-    width: 20px;
-    height: 20px;
+#list>div {
+    background-color: "#000000";
 }
 
-label {
-    font-size: 15px;
+#list>div:hover {
+    cursor: pointer;;
+}
+
+h2 {
+    font-size: 14px;
+}
+
+#list>div>p, #list>div>h2 {
+    font-family: Arial, Helvetica, sans-serif;
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+
+#list>div {
+    margin-bottom: 3px;
 }

@@ -1,108 +1,50 @@
-sidebar_info = document.getElementById("info");
-sidebar_list = document.getElementById("list");
+sidebar_info = d3.select("#info");
+sidebar_list = d3.select("#list");
 
 function clear_sidebar() {
-    let node = sidebar_info
-    while (node.firstChild) {
-        node.removeChild(node.firstChild);
-    }
-    node = sidebar_list
-    while (node.firstChild) {
-        node.removeChild(node.firstChild);
-    }
-
+    sidebar_info.selectAll("*").remove()
+    sidebar_list.selectAll("*").remove()
 }
 
-function creatActorDiv(actor) {
-    let div = document.createElement("div")
-    div.onclick = function() { select_actor(actor) }
-    div.style.backgroundColor = actor.color
-    let label = document.createElement("label");
-    label.innerHTML = actor.name
-    let checkbox = document.createElement('input');
-    checkbox.type = "checkbox";
-    checkbox.className = "checkbox";
-    checkbox.checked = true;
-    checkbox.onclick = function () {
-        if (this.checked) {
-            actor.addTo(map)
-        } else {
-            actor.remove(map)
-        }
-    }
-    div.appendChild(checkbox)
-    div.appendChild(label)
-    return div
-}
-/*
-function creatMonthDiv(summary) {
-    let div = document.createElement("div")
-    div.onclick(function() { select_month(summary) })
-    let label = document.createElement("p");
-    label.innerHTML = actor.name
-    let checkbox = document.createElement('input');
-    checkbox.type = "checkbox";
-    checkbox.className = "checkbox";
-    checkbox.checked = true;
-    checkbox.onclick = function () {
-        if (this.checked) {
-            actor.addTo(map)
-        } else {
-            actor.remove(map)
-        }
-    }
-    div.appendChild(checkbox)
-    div.appendChild(label)
-    return div
+function createInfo(infos) {
+    let enter = sidebar_info
+        .selectAll("div")
+        .data(infos)
+        .enter()
+        .append("div")
+    enter.append("p")
+        .text(i => { return i[0] })
+    enter.append("p")
+        .text(i => { return i[1] })
 }
 
-function creatIncidentDiv(actor) {
-    let div = document.createElement("div")
-    div.onclick(function() { select_actor(actor) })
-    div.style.backgroundColor = actor.color
-    let label = document.createElement("label");
-    label.innerHTML = actor.name
-    let checkbox = document.createElement('input');
-    checkbox.type = "checkbox";
-    checkbox.className = "checkbox";
-    checkbox.checked = true;
-    checkbox.onclick = function () {
-        if (this.checked) {
-            actor.addTo(map)
-        } else {
-            actor.remove(map)
-        }
-    }
-    div.appendChild(checkbox)
-    div.appendChild(label)
-    return div
+function createAssociates(associates) {
+    sidebar_list.selectAll("div")
+        .data(associates)
+        .enter()
+        .append("div")
+        .each(function (assoc) { assoc[1].fillDivAs(assoc[0], this) })
 }
-*/
 
 function select_nothing() {
     clear_sidebar()
-    let b = document.createElement('button');
-    b.innerHTML='collapse all';
     //b.setAttribute('class', 'btn');
-    b.onclick = function() {
-        important_actors.forEach(actor => {
-            actor.collapse()
+    sidebar_info.append("button")
+        .on("click", function () {
+            important_actors.forEach(actor => {
+                actor.collapse()
+            })
         })
-    }
-    sidebar_info.appendChild(b)
-    important_actors.forEach(actor => {
-        sidebar_list.appendChild(creatActorDiv(actor))
-    })
+        .text("collapse all")
+    createAssociates(important_actors.map(function(actor) {
+        return ["group", actor]
+    }))
 }
 
-function select_incident(inc) {
+function select_element(element) {
     clear_sidebar()
-}
-
-function select_month(summary) {
-    clear_sidebar()
-}
-
-function select_actor(actor) {
-    clear_sidebar()
+    sidebar_info.append("h1")
+        .text(element.name)
+    createInfo(element.getInfo())
+    createAssociates(element.getAssociates())
 }

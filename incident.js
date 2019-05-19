@@ -1,12 +1,13 @@
 class Incident {
     constructor(input, parent) {
+        this.name = input.event_type
         this.parent = parent
         let inc = this
         this.info = input
         this.latlng = [input.latitude, input.longitude];
         this.line = L.polyline([this.latlng, parent.latlng], { opacity: 0.5, dashArray: "10 10" })
         this.marker = L.marker(this.latlng, {
-            opacity: 0.8,
+            opacity: parent.opacity,
             icon: iconMap.get(input.event_type)
         }).bindPopup(`${input.event_date}<br>${input.event_type}<br>against ${input.actor2}`)
         this.marker.on('mouseover', function (e) {
@@ -15,23 +16,55 @@ class Incident {
         this.marker.on('mouseout', function (e) {
             this.closePopup();
         });
-        this.marker.on("click", function() {
-            select_incident(inc)
+        this.marker.on("click", function () {
+            select_element(inc)
         })
         let icon = this.marker.options.icon;
         icon.options.iconSize = [Math.sqrt(this.info.fatalities) * 10 + 30, Math.sqrt(this.info.fatalities) * 10 + 30];
         this.marker.setIcon(icon)
+        this.color = null
     }
     addTo(m) {
         this.marker.addTo(m)
         this.line.addTo(m)
     }
     setColor(col) {
+        this.color = col
         this.line.setStyle({ color: col });
     }
     remove(m) {
         m.removeLayer(this.marker)
         m.removeLayer(this.line)
+    }
+    getInfo() {
+        let info = []
+        info.push(["event", this.info.event_type])
+        info.push(["sub-event", this.info.sub_event_type])
+        info.push(["date", this.info.event_date])
+        info.push(["fatalities", this.info.fatalities])
+        info.push(["description", this.info.notes])
+        return info
+    }
+    getAssociates() {
+        let assoc = []
+        assoc.push(["group", this.parent.parent])
+        assoc.push(["month", this.parent])
+        if (this.info.actor2) {
+            if (actors_map.has(this.info.actor2)) {
+                assoc.push(["actor2", actors_map.get(this.info.actor2)])
+            }
+        }
+        return assoc
+    }
+    fillDivAs(label, div_svg) {
+        let inc = this
+        let div = d3.select(div_svg)
+        div.style("background-color", "#CCCCCC")
+        div.append("h2")
+            .text(function () { return `${label}: ${inc.info.event_type}` })
+        div.append("p")
+            .text(function () { return inc.info.event_date })
+        div.on("click", function () { select_element(inc) })
     }
 }
 
@@ -59,11 +92,14 @@ class Connection {
 
 class MonthSummary {
     constructor(input, parent) {
+        this.name = input.date
         this.parent = parent
+        this.info = input
         let spl = input.date.split("-")
         this.year = parseInt(spl[0])
         this.month = parseInt(spl[1])
         this.latlng = input.latlng
+        this.opacity = 1.0 - ((2019-this.year)*12 + 5-this.month) * 0.05
         this.incidents = input.incidents.map(entry => {
             return new Incident(entry, this)
         })
@@ -71,7 +107,8 @@ class MonthSummary {
             return acc + inc.info.fatalities
         }, 0)
         this.marker = L.circleMarker(this.latlng, {
-            opacity: 0.5,
+            opacity: this.opacity,
+            fillOpacity: this.opacity / 2,
             radius: Math.sqrt(this.fatalities) + 5
         })
         this.convex_hull = convex_hull_polyline(this.incidents)
@@ -85,10 +122,13 @@ class MonthSummary {
         this.marker.on('mouseout', function (e) {
             this.closePopup();
         });
+        this.color = null
     }
     addTo(m) {
+        let month = this
         let parent = this
         this.marker.addTo(m).on('click', function (e) {
+            select_element(month)
             if (parent.isCollapsed) {
                 parent.expand()
             } else {
@@ -102,6 +142,7 @@ class MonthSummary {
         m.removeLayer(this.marker)
     }
     setColor(col) {
+        this.color = col
         this.marker.setStyle({ color: col });
         this.incidents.forEach(inc => {
             inc.setColor(col)
@@ -129,11 +170,39 @@ class MonthSummary {
         })
         this.isCollapsed = true
     }
+    getInfo() {
+        let info = []
+        info.push(["month", this.info.date])
+        return info
+    }
+    getAssociates() {
+        let assoc = []
+        assoc.push(["group", this.parent])
+        this.incidents.forEach(inc => {
+            assoc.push(["incident", inc])
+        })
+        return assoc
+    }
+    fillDivAs(label, div_svg) {
+        let month = this
+        let div = d3.select(div_svg)
+        div.style("background-color", "#CCCCCC")
+        div.append("h2")
+            .text(function () { return `${label}: ${month.info.date}` })
+        div.append("p")
+            .text(function () { return month.info.event_date })
+        div.append("p")
+            .text(function () { return `${month.incidents.length} incidents` })
+        div.append("p")
+            .text(function () { return `${month.fatalities} fatalities` })
+        div.on("click", function () { select_element(month) })
+    }
 }
 
 class Actor {
     constructor(name, input) {
         let actor = this
+        this.active = false
         this.name = name
         this.info = input
         this.months = input.map(m => { return new MonthSummary(m, actor) })
@@ -158,6 +227,7 @@ class Actor {
         this.connections.forEach(connection => {
             connection.addTo(m)
         })
+        this.active = true
     }
     setColor(col) {
         this.color = col
@@ -175,10 +245,43 @@ class Actor {
         this.connections.forEach(connection => {
             connection.remove(m)
         })
+        this.active = false
     }
     collapse() {
         this.months.forEach(month => {
             month.collapse()
         })
+    }
+    getInfo() {
+        let info = []
+        return info
+    }
+    getAssociates() {
+        let assoc = []
+        this.months.forEach(month => {
+            assoc.push(["month", month])
+        })
+        return assoc
+    }
+    fillDivAs(label, div_svg) {
+        let actor = this
+        let div = d3.select(div_svg)
+        div.append("h2")
+            .text(function () { return `${label}: ${actor.name}` })
+        div.on("click", function () { select_element(actor) })
+        div.style("background-color", actor.color)
+        div.append("input")
+            .attr("type", "checkbox")
+            .attr("checked", actor.active)
+            .attr("disabled", (actor.color == null) ? true : null)
+            .on("click", function () {
+                d3.event.stopPropagation()
+                if (this.checked) {
+                    actor.addTo(map)
+                } else {
+                    actor.remove(map)
+                }
+            })
+        div.append("label").text("is visible")
     }
 }

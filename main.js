@@ -11,6 +11,9 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=p
 }).addTo(map);
 
 actors = load_file()
+actors_map = new Map(actors.map(actor => {
+    return [actor.name, actor]
+}))
 important_actors = actors.filter(actor => {
     return actor.noIncidents > 50
 })
