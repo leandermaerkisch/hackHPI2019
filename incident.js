@@ -1,13 +1,23 @@
 class Incident {
     constructor(input, parent) {
         this.parent = parent
+        let inc = this
         this.info = input
         this.latlng = [input.latitude, input.longitude];
         this.line = L.polyline([this.latlng, parent.latlng], { opacity: 0.5, dashArray: "10 10" })
         this.marker = L.marker(this.latlng, {
             opacity: 0.8,
             icon: iconMap.get(input.event_type)
-        }).bindPopup(input.notes)
+        }).bindPopup(`${input.event_date}<br>${input.event_type}<br>against ${input.actor2}`)
+        this.marker.on('mouseover', function (e) {
+            this.openPopup();
+        });
+        this.marker.on('mouseout', function (e) {
+            this.closePopup();
+        });
+        this.marker.on("click", function() {
+            select_incident(inc)
+        })
         let icon = this.marker.options.icon;
         icon.options.iconSize = [Math.sqrt(this.info.fatalities) * 10 + 30, Math.sqrt(this.info.fatalities) * 10 + 30];
         this.marker.setIcon(icon)
@@ -48,7 +58,8 @@ class Connection {
 }
 
 class MonthSummary {
-    constructor(input) {
+    constructor(input, parent) {
+        this.parent = parent
         let spl = input.date.split("-")
         this.year = parseInt(spl[0])
         this.month = parseInt(spl[1])
@@ -67,6 +78,13 @@ class MonthSummary {
         this.map = null
         this.isCollapsed = true
         this.noIncidents = this.incidents.length
+        this.marker.bindPopup(`${this.year}-${this.month}<br>${parent.name}<br>${this.incidents.length} incidents<br>${this.fatalities} fatalities`)
+        this.marker.on('mouseover', function (e) {
+            this.openPopup();
+        });
+        this.marker.on('mouseout', function (e) {
+            this.closePopup();
+        });
     }
     addTo(m) {
         let parent = this
@@ -115,9 +133,10 @@ class MonthSummary {
 
 class Actor {
     constructor(name, input) {
+        let actor = this
         this.name = name
         this.info = input
-        this.months = input.map(m => { return new MonthSummary(m) })
+        this.months = input.map(m => { return new MonthSummary(m, actor) })
         this.connections = this.months.map((month, index, array) => {
             if (index == array.length - 1 || month.latlng[0] == array[index + 1].latlng[0] && month.latlng[1] == array[index + 1].latlng[1]) {
                 return null
@@ -130,6 +149,7 @@ class Actor {
         this.noIncidents = this.months.reduce((acc, month) => {
             return acc + month.noIncidents
         }, 0)
+        this.color = null
     }
     addTo(m) {
         this.months.forEach(month => {
@@ -140,6 +160,7 @@ class Actor {
         })
     }
     setColor(col) {
+        this.color = col
         this.months.forEach(month => {
             month.setColor(col)
         });

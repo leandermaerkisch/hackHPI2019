@@ -38,8 +38,8 @@ var iconExplosion = L.icon({
 var iconStrategic = L.icon({
     iconUrl: 'docs/images/strategy.png',
     iconSize: iconExtent,
-    iconAnchor: [iconExtent[0]/2, iconExtent[1]/2],
-    popupAnchor: [-iconExtent[0]/2, -iconExtent[1]/2]
+    iconAnchor: [-iconExtent[0]/2, -iconExtent[1]/2],
+    popupAnchor: [iconExtent[0]/2, -iconExtent[1]/2]
 });
 
 iconMap = new Map([

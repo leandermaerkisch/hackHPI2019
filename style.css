@@ -11,5 +11,18 @@ html, body {
 #sidebar {
     width: 25%;
     height: 100%;
-    float: left;
+    float: right;
+    top: 0px;
+    right: 0px;
+    position: absolute;
+    overflow: scroll;
+}
+
+.checkbox {
+    width: 20px;
+    height: 20px;
+}
+
+label {
+    font-size: 15px;
 }
