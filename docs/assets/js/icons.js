@@ -1,42 +1,42 @@
 var iconExtent = [40, 40]
 
 var iconBattles = L.icon({
-    iconUrl: 'docs/images/clash.png',
+    iconUrl: 'assets/images/clash.png',
     iconSize: iconExtent,
     iconAnchor: [iconExtent[0]/2, iconExtent[1]/2],
     popupAnchor: [-iconExtent[0]/2, -iconExtent[1]/2]
 });
 
 var iconViolence = L.icon({
-    iconUrl: 'docs/images/crosshair.png',
+    iconUrl: 'assets/images/crosshair.png',
     iconSize: iconExtent,
     iconAnchor: [iconExtent[0]/2, iconExtent[1]/2],
     popupAnchor: [-iconExtent[0]/2, -iconExtent[1]/2]
 });
 
 var iconProtests = L.icon({
-    iconUrl: 'docs/images/power.png',
+    iconUrl: 'assets/images/power.png',
     iconSize: iconExtent,
     iconAnchor: [iconExtent[0]/2, iconExtent[1]/2],
     popupAnchor: [-iconExtent[0]/2, -iconExtent[1]/2]
 });
 
 var iconRiot = L.icon({
-    iconUrl: 'docs/images/riot.png',
+    iconUrl: 'assets/images/riot.png',
     iconSize: iconExtent,
     iconAnchor: [iconExtent[0]/2, iconExtent[1]/2],
     popupAnchor: [-iconExtent[0]/2, -iconExtent[1]/2]
 });
 
 var iconExplosion = L.icon({
-    iconUrl: 'docs/images/blast.png',
+    iconUrl: 'assets/images/blast.png',
     iconSize: iconExtent,
     iconAnchor: [iconExtent[0]/2, iconExtent[1]/2],
     popupAnchor: [-iconExtent[0]/2, -iconExtent[1]/2]
 });
 
 var iconStrategic = L.icon({
-    iconUrl: 'docs/images/strategy.png',
+    iconUrl: 'assets/images/strategy.png',
     iconSize: iconExtent,
     iconAnchor: [iconExtent[0]/2, iconExtent[1]/2],
     popupAnchor: [-iconExtent[0]/2, -iconExtent[1]/2]
@@ -52,7 +52,7 @@ iconMap = new Map([
 ])
 
 var iconBorder = L.icon({
-    iconUrl: 'docs/images/border.png',
+    iconUrl: 'assets/images/border.png',
     iconSize: iconExtent,
     iconAnchor: [iconExtent[0]/2, iconExtent[1]/2],
     popupAnchor: [-iconExtent[0]/2, -iconExtent[1]/2]

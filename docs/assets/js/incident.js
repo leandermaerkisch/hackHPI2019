@@ -11,10 +11,14 @@ class Incident {
             icon: iconMap.get(input.event_type)
         }).bindPopup(`${input.event_date}<br>${input.event_type}<br>against ${input.actor2}`)
         this.marker.on('mouseover', function (e) {
-            this.openPopup();
+            if (!this.mouseStillOver) {
+                this.openPopup();
+                this.mouseStillOver = true
+            }
         });
         this.marker.on('mouseout', function (e) {
             this.closePopup();
+            this.mouseStillOver = false
         });
         this.marker.on("click", function () {
             select_element(inc)
@@ -24,6 +28,7 @@ class Incident {
         this.marker.setIcon(icon)
         this.color = null
         this.active = false
+        this.mouseStillOver = false
     }
     addTo(m) {
         this.marker.addTo(m)
@@ -167,6 +172,7 @@ class MonthSummary {
         this.marker.on('mouseover', function (e) {
             this.openPopup();
             month.addAllConnections()
+            month.marker.bringToFront()
         });
         this.marker.on('mouseout', function (e) {
             this.closePopup();
@@ -324,7 +330,7 @@ class Actor {
             month.collapse()
         })
         this.expanded = false
-    }   
+    }
     getInfo() {
         let info = []
         if (this.map == null) {
@@ -367,7 +373,7 @@ class Actor {
         div.append("label").text("is visible")
         div.append("button")
             .text("toggle expand")
-            .on("click", function() {
+            .on("click", function () {
                 d3.event.stopPropagation()
                 if (actor.expanded) {
                     actor.collapse()
