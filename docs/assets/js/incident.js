@@ -218,9 +218,6 @@ class MonthSummary {
         this.isCollapsed = false
     }
     collapse() {
-        if (this.isCollapsed) {
-            return
-        }
         this.map.removeLayer(this.convex_hull)
         this.incidents.forEach(inc => {
             inc.remove(this.map)

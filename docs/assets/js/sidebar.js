@@ -31,7 +31,7 @@ function toggleCommonEvent(actor1, actor2) {
     let inc1 = actor1.months.map(month => {
         return month.incidents.map(inc => {
             if (inc.info.actor2 == actor2.name) {
-                return [month, inc]
+                return inc
             } else {
                 return null
             }
@@ -67,8 +67,10 @@ function createAssociates(associates, element=null) {
         .append("button")
             .text("toggle common events")
             .on("click", function (assoc) {
-                toggleCommonEvent(element, assoc)
+                d3.event.stopPropagation()
+                toggleCommonEvent(element, assoc[1])
             })
+            .property("disabled", function (assoc) { return (assoc[1].map == null || element.map == null) ? true : null })
 }
 
 function remove_by_substring(string) {

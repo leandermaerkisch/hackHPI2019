@@ -1,6 +1,6 @@
 
 var map = L.map('map').setView([13, 12], 8);
-map.on("click", function() { select_nothing() })
+map.on("click", function () { select_nothing() })
 
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
     maxZoom: 18,
@@ -39,4 +39,15 @@ Object.entries(crossed_borders_data).forEach(pair => {
     bs.forEach(b => {
         borders_map.get(b).push(actor)
     })
+})
+common_involvement_data.forEach(inv => {
+    if (inv.common_involvement > 2) {
+        let actor1 = actors_map.get(inv.relation[0])
+        let actor2 = actors_map.get(inv.relation[1])
+        if (actor1 != undefined && actor2 != undefined) {
+            actor1.closely_related.push(actor2)
+            actor2.closely_related.push(actor1)
+            console.log(actor1.name, " and ", actor2.name)
+        }
+    }
 })
