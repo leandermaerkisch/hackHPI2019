@@ -17,7 +17,7 @@ While hovering on a node, the particular month is displayed, along with the name
 ### Detailed breakdown
 ![alt text](https://github.com/arthurz0/hackHPI2019/blob/master/example/zoom_example.png "Boko Haram Zoom Example")
 
-After clicking on a node, all of the events for that particular month are displayed within an area of influence. Each event has an icon corresponding to its type (Riot, Attack on civilians).
+After clicking on a node, all of the events for that particular month are displayed within an area of influence. Each event has an icon corresponding to its type (Riot, Attack on civilians, Peaceful protest).
 
 
 ### Tech
